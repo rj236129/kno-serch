@@ -1,0 +1,104 @@
+<script type="module">
+    // Import necessary Firebase modules
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
+    import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+    import { getDatabase } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
+  
+    // Firebase configuration
+    const firebaseConfig = {
+      apiKey: "AIzaSyCLuhmQ5HoDDeKiFj8sVlOy7JzX-w5YMX8",
+      authDomain: "kno-serch.firebaseapp.com",
+      projectId: "kno-serch",
+      storageBucket: "kno-serch.appspot.com",
+      messagingSenderId: "986923819478",
+      appId: "1:986923819478:web:7e147885ba6e0f00f24477",
+      measurementId: "G-FMWTC6NGVT",
+    };
+  
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const analytics = getAnalytics(app); // Optional for Analytics
+  
+    // Firebase Services
+    const auth = getAuth(app); // Firebase Authentication
+    const firestore = getFirestore(app); // Firestore (for documents)
+    const database = getDatabase(app); // Realtime Database (for structured data)
+  
+    // Sign-Up function
+    function signUpUser(email, password) {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // User signed up successfully
+          const user = userCredential.user;
+          alert("Sign Up Successful! Welcome " + user.email);
+          // You can redirect to another page after successful sign-up
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert("Error during sign-up: " + errorMessage);
+        });
+    }
+  
+    // Login function
+    function loginUser(email, password) {
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // User logged in successfully
+          const user = userCredential.user;
+          alert("Login Successful! Welcome " + user.email);
+          window.location.href = "home.html"; // Redirect to login page
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          alert("Error during login: " + errorMessage);
+        });
+    }
+  
+    // Check Auth State (User sign-in state management)
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        // User is signed in
+        console.log("User signed in: " + user.email);
+        // You can show the user's specific data after authentication
+      } else {
+        // No user is signed in
+        console.log("No user signed in");
+      }
+    });
+  
+    // HTML Elements for Sign-Up and Login
+    document.getElementById("signUpForm").addEventListener("submit", function (e) {
+      e.preventDefault(); // Prevent form submission
+      const email = document.getElementById("signUpEmail").value;
+      const password = document.getElementById("signUpPassword").value;
+      signUpUser(email, password);
+    });
+  
+    document.getElementById("loginForm").addEventListener("submit", function (e) {
+      e.preventDefault(); // Prevent form submission
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+      loginUser(email, password);
+    });
+  </script>
+  
+  <!-- HTML Form for Sign-Up -->
+  <h3>Sign-Up</h3>
+  <form id="signUpForm">
+    <input type="email" id="signUpEmail" placeholder="Enter your email" required />
+    <input type="password" id="signUpPassword" placeholder="Enter your password" required />
+    <button type="submit">Sign-Up</button>
+  </form>
+  
+  <!-- HTML Form for Login -->
+  <h3>Login</h3>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Enter your email" required />
+    <input type="password" id="loginPassword" placeholder="Enter your password" required />
+    <button type="submit">Login</button>
+  </form>
+  
