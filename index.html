@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat with Website and Google Results</title>
+    <title>AI Chat with RJ Services</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -31,12 +31,19 @@
         .messages {
             max-height: 400px;
             overflow-y: scroll;
+            margin-bottom: 20px;
         }
         .message {
             padding: 10px;
             margin: 5px;
             background: #f1f1f1;
             border-radius: 5px;
+        }
+        .user {
+            background: #e1f5fe;
+        }
+        .bot {
+            background: #fff3e0;
         }
     </style>
 </head>
@@ -55,7 +62,7 @@
 // **JSON URL** - replace with your site's actual JSON data URL
 const jsonURL = "https://rj236129.github.io/rj.services4/data.json";
 
-// Fetch the JSON data
+// Fetch the JSON data and store it for future use
 let siteData = [];
 
 fetch(jsonURL)
@@ -69,7 +76,7 @@ fetch(jsonURL)
 // Function to handle user queries
 function sendQuery() {
     const query = document.getElementById("userQuery").value.trim();
-    if (!query) return;
+    if (!query) return; // Prevent empty queries
 
     addMessage(query, "user"); // Display user query
 
@@ -121,8 +128,7 @@ function fetchGoogleResults(query) {
 function addMessage(text, sender) {
     const messageContainer = document.getElementById("messages");
     const messageDiv = document.createElement("div");
-    messageDiv.classList.add("message");
-    messageDiv.classList.add(sender);
+    messageDiv.classList.add("message", sender);
     messageDiv.innerText = text;
     messageContainer.appendChild(messageDiv);
     messageContainer.scrollTop = messageContainer.scrollHeight; // Auto-scroll to the latest message
