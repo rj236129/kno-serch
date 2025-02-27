@@ -1,104 +1,134 @@
-<script type="module">
-    // Import necessary Firebase modules
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
-    import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-analytics.js";
-    import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
-    import { getDatabase } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
-  
-    // Firebase configuration
-    const firebaseConfig = {
-    apiKey: "AIzaSyCmFj9KfDMBuDhlaxB0hwHwXLHlkt1tfSk",
-    authDomain: "kno-serch.firebaseapp.com",
-    databaseURL: "https://kno-serch-default-rtdb.firebaseio.com",
-    projectId: "kno-serch",
-    storageBucket: "kno-serch.firebasestorage.app",
-    messagingSenderId: "986923819478",
-    appId: "1:986923819478:web:7e147885ba6e0f00f24477",
-    measurementId: "G-FMWTC6NGVT"
-  };
-    // Initialize Firebase
-    const app = initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app); // Optional for Analytics
-  
-    // Firebase Services
-    const auth = getAuth(app); // Firebase Authentication
-    const firestore = getFirestore(app); // Firestore (for documents)
-    const database = getDatabase(app); // Realtime Database (for structured data)
-  
-    // Sign-Up function
-    function signUpUser(email, password) {
-      createUserWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // User signed up successfully
-          const user = userCredential.user;
-          alert("Sign Up Successful! Welcome " + user.email);
-          // You can redirect to another page after successful sign-up
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          alert("Error during sign-up: " + errorMessage);
-        });
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat with Website and Google Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        .chat-box {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .chat-box input {
+            padding: 10px;
+            font-size: 14px;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .messages {
+            max-height: 400px;
+            overflow-y: scroll;
+        }
+        .message {
+            padding: 10px;
+            margin: 5px;
+            background: #f1f1f1;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <h2>AI Chat with RJ Services</h2>
+    <div class="messages" id="messages"></div>
+    <div class="chat-box">
+        <input type="text" id="userQuery" placeholder="Ask something..." />
+        <button onclick="sendQuery()">Send</button>
+    </div>
+</div>
+
+<script>
+// **JSON URL** - replace with your site's actual JSON data URL
+const jsonURL = "https://rj236129.github.io/rj.services4/data.json";
+
+// Fetch the JSON data
+let siteData = [];
+
+fetch(jsonURL)
+    .then(response => response.json())
+    .then(jsonData => {
+        siteData = jsonData;
+        console.log("Site Data Loaded: ", siteData);
+    })
+    .catch(error => console.error("Error fetching site data: ", error));
+
+// Function to handle user queries
+function sendQuery() {
+    const query = document.getElementById("userQuery").value.trim();
+    if (!query) return;
+
+    addMessage(query, "user"); // Display user query
+
+    // Check if query matches any site data
+    const siteResponse = getSiteResponse(query);
+    if (siteResponse) {
+        addMessage(siteResponse, "bot"); // If matched from site, show it
+    } else {
+        // Fallback to Google search if no match found
+        fetchGoogleResults(query);
     }
-  
-    // Login function
-    function loginUser(email, password) {
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          // User logged in successfully
-          const user = userCredential.user;
-          alert("Login Successful! Welcome " + user.email);
-          window.location.href = "home.html"; // Redirect to login page
-        })
-        .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
-          alert("Error during login: " + errorMessage);
-        });
+}
+
+// Check if the query matches any of the site data
+function getSiteResponse(query) {
+    for (let section of siteData) {
+        for (let item of section) {
+            if (item.title.toLowerCase().includes(query.toLowerCase()) ||
+                item.description.toLowerCase().includes(query.toLowerCase())) {
+                return `Answer from site: ${item.title}: ${item.description}`;
+            }
+        }
     }
-  
-    // Check Auth State (User sign-in state management)
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        // User is signed in
-        console.log("User signed in: " + user.email);
-        // You can show the user's specific data after authentication
-      } else {
-        // No user is signed in
-        console.log("No user signed in");
-      }
-    });
-  
-    // HTML Elements for Sign-Up and Login
-    document.getElementById("signUpForm").addEventListener("submit", function (e) {
-      e.preventDefault(); // Prevent form submission
-      const email = document.getElementById("signUpEmail").value;
-      const password = document.getElementById("signUpPassword").value;
-      signUpUser(email, password);
-    });
-  
-    document.getElementById("loginForm").addEventListener("submit", function (e) {
-      e.preventDefault(); // Prevent form submission
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
-      loginUser(email, password);
-    });
-  </script>
-  
-  <!-- HTML Form for Sign-Up -->
-  <h3>Sign-Up</h3>
-  <form id="signUpForm">
-    <input type="email" id="signUpEmail" placeholder="Enter your email" required />
-    <input type="password" id="signUpPassword" placeholder="Enter your password" required />
-    <button type="submit">Sign-Up</button>
-  </form>
-  
-  <!-- HTML Form for Login -->
-  <h3>Login</h3>
-  <form id="loginForm">
-    <input type="email" id="loginEmail" placeholder="Enter your email" required />
-    <input type="password" id="loginPassword" placeholder="Enter your password" required />
-    <button type="submit">Login</button>
-  </form>
-  
+    return null; // No match found
+}
+
+// Google Custom Search API fallback
+function fetchGoogleResults(query) {
+    const apiKey = 'AIzaSyBSXL_KgeijcaQH0FMYgydfd9B98AZwB_I'; // Replace with your Google API Key
+    const cx = 'c6c520bc0202e4f36'; // Replace with your Custom Search Engine ID
+
+    fetch(`https://www.googleapis.com/customsearch/v1?q=${query}&key=${apiKey}&cx=${cx}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.items && data.items.length > 0) {
+                const firstResult = data.items[0];
+                addMessage(`Google result: ${firstResult.title} - ${firstResult.link}`, "bot");
+            } else {
+                addMessage("Sorry, I couldn't find any relevant information on Google either.", "bot");
+            }
+        })
+        .catch(error => {
+            addMessage("Sorry, there was an error fetching Google results.", "bot");
+            console.error("Error fetching Google data:", error);
+        });
+}
+
+// Function to add messages to chat
+function addMessage(text, sender) {
+    const messageContainer = document.getElementById("messages");
+    const messageDiv = document.createElement("div");
+    messageDiv.classList.add("message");
+    messageDiv.classList.add(sender);
+    messageDiv.innerText = text;
+    messageContainer.appendChild(messageDiv);
+    messageContainer.scrollTop = messageContainer.scrollHeight; // Auto-scroll to the latest message
+}
+
+</script>
+
+</body>
+</html>
