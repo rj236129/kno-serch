@@ -8,6 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
+            background-color: #f0f0f0;
         }
         .chat-container {
             max-width: 600px;
@@ -15,10 +16,14 @@
             padding: 20px;
             border: 1px solid #ddd;
             border-radius: 10px;
-            background: #f9f9f9;
+            background: #ffffff;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
         }
         .chat-box {
-            margin-bottom: 15px;
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
         }
@@ -27,23 +32,42 @@
             font-size: 14px;
             width: 100%;
             margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .chat-box button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .chat-box button:hover {
+            background-color: #0056b3;
         }
         .messages {
             max-height: 400px;
             overflow-y: scroll;
             margin-bottom: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
         }
         .message {
             padding: 10px;
-            margin: 5px;
+            margin: 5px 0;
             background: #f1f1f1;
             border-radius: 5px;
+            max-width: 80%;
         }
         .user {
             background: #e1f5fe;
+            align-self: flex-start;
         }
         .bot {
             background: #fff3e0;
+            align-self: flex-end;
         }
     </style>
 </head>
@@ -59,7 +83,7 @@
 </div>
 
 <script>
-// **JSON URL** - replace with your site's actual JSON data URL
+// **JSON URL** - Replace with your site's actual JSON data URL
 const jsonURL = "https://rj236129.github.io/rj.services4/data.json";
 
 // Fetch the JSON data and store it for future use
@@ -88,15 +112,19 @@ function sendQuery() {
         // Fallback to Google search if no match found
         fetchGoogleResults(query);
     }
+
+    document.getElementById("userQuery").value = ''; // Clear the input field
 }
 
 // Check if the query matches any of the site data
 function getSiteResponse(query) {
     for (let section of siteData) {
-        for (let item of section) {
-            if (item.title.toLowerCase().includes(query.toLowerCase()) ||
-                item.description.toLowerCase().includes(query.toLowerCase())) {
-                return `Answer from site: ${item.title}: ${item.description}`;
+        if (Array.isArray(section)) {
+            for (let item of section) {
+                if (item.title.toLowerCase().includes(query.toLowerCase()) ||
+                    item.description.toLowerCase().includes(query.toLowerCase())) {
+                    return `Answer from site: ${item.title}: ${item.description}`;
+                }
             }
         }
     }
