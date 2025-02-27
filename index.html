@@ -83,19 +83,9 @@
 </div>
 
 <script>
-// **JSON URL** - Replace with your site's actual JSON data URL
-const jsonURL = "https://rj236129.github.io/rj.services4/data.json";
+const apiKey = 'AIzaSyCXy0aNNZQm8RAUQ1-UV4yDyviErACvy8I'; // Your actual API Key
+const cx = '221d48974cb96450a'; // Your actual CSE ID
 
-// Fetch the JSON data and store it for future use
-let siteData = [];
-
-fetch(jsonURL)
-    .then(response => response.json())
-    .then(jsonData => {
-        siteData = jsonData;
-        console.log("Site Data Loaded: ", siteData);
-    })
-    .catch(error => console.error("Error fetching site data: ", error));
 
 // Function to handle user queries
 function sendQuery() {
@@ -104,38 +94,14 @@ function sendQuery() {
 
     addMessage(query, "user"); // Display user query
 
-    // Check if query matches any site data
-    const siteResponse = getSiteResponse(query);
-    if (siteResponse) {
-        addMessage(siteResponse, "bot"); // If matched from site, show it
-    } else {
-        // Fallback to Google search if no match found
-        fetchGoogleResults(query);
-    }
+    // Fetch results from Google Custom Search API
+    fetchGoogleResults(query);
 
     document.getElementById("userQuery").value = ''; // Clear the input field
 }
 
-// Check if the query matches any of the site data
-function getSiteResponse(query) {
-    for (let section of siteData) {
-        if (Array.isArray(section)) {
-            for (let item of section) {
-                if (item.title.toLowerCase().includes(query.toLowerCase()) ||
-                    item.description.toLowerCase().includes(query.toLowerCase())) {
-                    return `Answer from site: ${item.title}: ${item.description}`;
-                }
-            }
-        }
-    }
-    return null; // No match found
-}
-
-// Google Custom Search API fallback
+// Google Custom Search API to fetch search results
 function fetchGoogleResults(query) {
-    const apiKey = 'AIzaSyCXy0aNNZQm8RAUQ1-UV4yDyviErACvy8I'; // Replace with your Google API Key
-    const cx = '221d48974cb96450a'; // Replace with your Custom Search Engine ID
-
     fetch(`https://www.googleapis.com/customsearch/v1?q=${query}&key=${apiKey}&cx=${cx}`)
         .then(response => response.json())
         .then(data => {
@@ -143,7 +109,7 @@ function fetchGoogleResults(query) {
                 const firstResult = data.items[0];
                 addMessage(`Google result: ${firstResult.title} - ${firstResult.link}`, "bot");
             } else {
-                addMessage("Sorry, I couldn't find any relevant information on Google either.", "bot");
+                addMessage("Sorry, I couldn't find any relevant information on Google.", "bot");
             }
         })
         .catch(error => {
@@ -161,7 +127,6 @@ function addMessage(text, sender) {
     messageContainer.appendChild(messageDiv);
     messageContainer.scrollTop = messageContainer.scrollHeight; // Auto-scroll to the latest message
 }
-
 </script>
 
 </body>
