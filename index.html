@@ -1,86 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Login</title>
-  <script src="https://apis.google.com/js/platform.js" async defer></script>
-  <style>
-    /* Basic Styling for login page */
-    body {
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-      background-color: #f0f0f0;
-    }
-    .container {
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      text-align: center;
-    }
-    .g-signin2 {
-      margin-top: 20px;
-    }
-    #user-info {
-      margin-top: 20px;
-      display: none;
-      font-size: 18px;
-      color: #333;
-    }
-    #user-name {
-      font-weight: bold;
-    }
-    #user-email {
-      color: gray;
-    }
-    #sign-out {
-      margin-top: 20px;
-      padding: 10px 15px;
-      background-color: #db4437;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Login Example</title>
+    
+    <!-- Include the Google API script -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin-top: 50px;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
+
+    <!-- Google Sign-In Button -->
     <h2>Login with Google</h2>
     <div class="g-signin2" data-onsuccess="onSignIn" data-clientid="673877900657-cq90vf6i8mqo00afqtf2cc7jm0pmlq05.apps.googleusercontent.com"></div>
 
-    <div id="user-info">
-      <p>Hello, <span id="user-name"></span>!</p>
-      <p>Email: <span id="user-email"></span></p>
-      <button id="sign-out" onclick="signOut()">Sign Out</button>
-    </div>
-  </div>
+    <!-- Logout Button (Initially Hidden) -->
+    <button id="signout-button" style="display:none;" onclick="signOut()">Sign Out</button>
 
-  <script>
-    function onSignIn(googleUser) {
-      var profile = googleUser.getBasicProfile();
-      var userName = profile.getName();
-      var userEmail = profile.getEmail();
+    <script>
+        // Function to handle Google sign-in success
+        function onSignIn(googleUser) {
+            var profile = googleUser.getBasicProfile();
+            
+            // Display user info in the console (you can use it as per your need)
+            console.log("Full Name: " + profile.getName());
+            console.log("Email: " + profile.getEmail());
+            console.log("Profile Image: " + profile.getImageUrl());
+            
+            // Hide the sign-in button and show the sign-out button
+            document.querySelector('.g-signin2').style.display = 'none';
+            document.getElementById('signout-button').style.display = 'block';
+        }
 
-      document.getElementById('user-name').textContent = userName;
-      document.getElementById('user-email').textContent = userEmail;
-      document.getElementById('user-info').style.display = 'block';
-      document.querySelector('.g-signin2').style.display = 'none';
-    }
+        // Function to handle user sign-out
+        function signOut() {
+            var auth2 = gapi.auth2.getAuthInstance();
+            auth2.signOut().then(function () {
+                console.log("User signed out.");
+                
+                // Show the sign-in button and hide the sign-out button
+                document.querySelector('.g-signin2').style.display = 'block';
+                document.getElementById('signout-button').style.display = 'none';
+            });
+        }
+    </script>
 
-    function signOut() {
-      var auth2 = gapi.auth2.getAuthInstance();
-      auth2.signOut().then(function() {
-        console.log('User signed out.');
-        document.getElementById('user-info').style.display = 'none';
-        document.querySelector('.g-signin2').style.display = 'block';
-      });
-    }
-  </script>
 </body>
 </html>
