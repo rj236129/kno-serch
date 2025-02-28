@@ -89,7 +89,7 @@
             document.getElementById("query").value = "";
         }
         function fetchGoogleResults(query) {
-            fetch(`https://www.googleapis.com/customsearch/v1?q=${query}&key=YOUR_API_KEY&cx=YOUR_CSE_ID`)
+            fetch(`https://www.googleapis.com/customsearch/v1?q=${query}&key=AIzaSyDqA356euefrQ1MwYape0W8CoDDb7Ihw9Q&cx=221d48974cb96450a`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.items) {
