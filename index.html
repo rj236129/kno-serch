@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Chat with RJ Services</title>
     <style>
-        /* Reset basic styles */
+        /* Basic styling as before */
         * {
             margin: 0;
             padding: 0;
@@ -161,8 +161,51 @@ function sendQuery() {
     // Show loading indicator
     document.getElementById("loading").style.display = "block";
 
-    // Fetch results from Google Custom Search API
-    fetchGoogleResults(query);
+    // Check if query matches basic concept question
+    if (isConceptQuery(query)) {
+        handleConceptQuery(query);
+    } else {
+        // Fetch results from Google Custom Search API
+        fetchGoogleResults(query);
+    }
+}
+
+// Check if query is a basic concept question (like 'What is GST?')
+function isConceptQuery(query) {
+    const basicQuestions = [
+        "what is gst", "what is itr", "how to make", "how to fill", "how to apply", "how to do"
+    ];
+
+    return basicQuestions.some(question => query.toLowerCase().includes(question));
+}
+
+// Handle basic concept queries (e.g., GST, PAN Card, ITR)
+function handleConceptQuery(query) {
+    let responseText = "";
+    let links = [];
+
+    if (query.toLowerCase().includes("gst")) {
+        responseText = "GST (Goods and Services Tax) is a single tax on the supply of goods and services. It replaces multiple indirect taxes like VAT, service tax, and excise duty. You can apply for GST registration on the official GST portal.";
+        links = ["https://www.gst.gov.in/"];
+    } else if (query.toLowerCase().includes("itr")) {
+        responseText = "ITR (Income Tax Return) is a form used by individuals and entities to report their income and expenses to the Income Tax Department. To file ITR, visit the official Income Tax Department portal.";
+        links = ["https://incometaxindiaefiling.gov.in/"];
+    } else if (query.toLowerCase().includes("pan card")) {
+        responseText = "A PAN (Permanent Account Number) Card is an essential document for individuals and businesses for taxation purposes. You can apply for a new PAN or update your existing PAN card through the official portal.";
+        links = ["https://www.onlineservices.nsdl.com/paam/PanLogin.html"];
+    } else if (query.toLowerCase().includes("how to make")) {
+        responseText = "To create or make something, there are specific websites and instructions based on what you're trying to create. Could you clarify what you're trying to make?";
+        links = ["https://www.amazon.in/", "https://www.flipkart.com/"];
+    }
+
+    // Send the response and links
+    addMessage(responseText, "bot");
+    if (links.length > 0) {
+        addMessage(`For more details, visit: <a href="${links[0]}" target="_blank">${links[0]}</a>`, "bot");
+    }
+
+    // Hide loading indicator
+    document.getElementById("loading").style.display = "none";
 }
 
 // Google Custom Search API to fetch search results
@@ -172,9 +215,10 @@ function fetchGoogleResults(query) {
         .then(data => {
             document.getElementById("loading").style.display = "none"; // Hide loading indicator
             if (data.items && data.items.length > 0) {
-                const firstResult = data.items[0];
-                const resultMessage = `Google result: <a href="${firstResult.link}" target="_blank">${firstResult.title}</a>`;
-                addMessage(resultMessage, "bot");
+                data.items.forEach(item => {
+                    const resultMessage = `${item.title}: <a href="${item.link}" target="_blank">${item.snippet}</a>`;
+                    addMessage(resultMessage, "bot");
+                });
             } else {
                 addMessage("Sorry, I couldn't find any relevant information on Google.", "bot");
             }
