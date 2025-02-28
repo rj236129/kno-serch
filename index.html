@@ -63,12 +63,10 @@
 
   <script>
     function onSignIn(googleUser) {
-      // Get user information
       var profile = googleUser.getBasicProfile();
       var userName = profile.getName();
       var userEmail = profile.getEmail();
-      
-      // Display user info
+
       document.getElementById('user-name').textContent = userName;
       document.getElementById('user-email').textContent = userEmail;
       document.getElementById('user-info').style.display = 'block';
