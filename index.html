@@ -12,7 +12,7 @@
     <!-- Email/Password Login -->
     <form onsubmit="login(); return false;">
         <input type="email" id="email" placeholder="Enter Email" required>
-        <input type="password" id="password" placeholder="Enter Password" required>
+        <input type="password" id="password" placeholder="Enter Password" required autocomplete="current-password">
         <button type="submit">Login</button>
     </form>
 
@@ -20,52 +20,54 @@
 
     <p id="message"></p>
 
-    <!-- Firebase SDK -->
+    <!-- ✅ Firebase SDK (11.4.0) -->
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/11.4.0/firebase-auth.js"></script>
 
     <script>
-        // 🔹 Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCbNf4KoMpzfMxGpeX-UeKys1zqvvsvZSQ",
+        document.addEventListener("DOMContentLoaded", function () {
+            // ✅ Firebase Configuration
+            const firebaseConfig = {
+           apiKey: "AIzaSyCbNf4KoMpzfMxGpeX-UeKys1zqvvsvZSQ",
          authDomain: "ai-chat-a04d2.firebaseapp.com",
          projectId: "ai-chat-a04d2",
          storageBucket: "ai-chat-a04d2.firebasestorage.app",
          messagingSenderId: "977444551817",
          appId: "1:977444551817:web:e50c9c4df105717ab71a58",
          measurementId: "G-ZGB033CM3M"
-        };
+            };
 
-        // 🔹 Firebase Initialize
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
+            // ✅ Firebase Initialize
+            firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
 
-        // 🔹 Login Function
-        function login() {
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
+            // ✅ Login Function
+            window.login = function () {
+                const email = document.getElementById("email").value;
+                const password = document.getElementById("password").value;
 
-            auth.signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    document.getElementById("message").innerText = "Login Successful!";
-                })
-                .catch((error) => {
-                    document.getElementById("message").innerText = error.message;
-                });
-        }
+                auth.signInWithEmailAndPassword(email, password)
+                    .then((userCredential) => {
+                        document.getElementById("message").innerText = "Login Successful!";
+                    })
+                    .catch((error) => {
+                        document.getElementById("message").innerText = error.message;
+                    });
+            };
 
-        // 🔹 Google Login Function
-        function googleLogin() {
-            const provider = new firebase.auth.GoogleAuthProvider();
+            // ✅ Google Login Function
+            window.googleLogin = function () {
+                const provider = new firebase.auth.GoogleAuthProvider();
 
-            auth.signInWithPopup(provider)
-                .then((result) => {
-                    document.getElementById("message").innerText = "Google Login Successful!";
-                })
-                .catch((error) => {
-                    document.getElementById("message").innerText = error.message;
-                });
-        }
+                auth.signInWithPopup(provider)
+                    .then((result) => {
+                        document.getElementById("message").innerText = "Google Login Successful!";
+                    })
+                    .catch((error) => {
+                        document.getElementById("message").innerText = error.message;
+                    });
+            };
+        });
     </script>
 </body>
 </html>
