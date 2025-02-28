@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Chat with RJ Services</title>
     <style>
-        /* Basic styling as before */
         * {
             margin: 0;
             padding: 0;
@@ -23,11 +22,14 @@
 
         .chat-container {
             width: 100%;
+            height: 90vh;
             max-width: 700px;
             background-color: #ffffff;
             padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
         }
 
         h2 {
@@ -39,7 +41,7 @@
         }
 
         .messages {
-            max-height: 450px;
+            flex: 1;
             overflow-y: auto;
             margin-bottom: 20px;
             padding: 20px;
@@ -132,6 +134,20 @@
         a:hover {
             text-decoration: underline;
         }
+
+        /* Image Styling for Websites */
+        .site-image {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .site-result {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+        }
     </style>
 </head>
 <body>
@@ -173,7 +189,7 @@ function sendQuery() {
 // Check if query is a basic concept question (like 'What is GST?')
 function isConceptQuery(query) {
     const basicQuestions = [
-        "what is gst", "what is itr", "how to make", "how to fill", "how to apply", "how to do"
+        "what is gst", "what is itr", "how to make", "how to fill", "how to apply", "how to do", "what is pan card"
     ];
 
     return basicQuestions.some(question => query.toLowerCase().includes(question));
@@ -215,29 +231,53 @@ function fetchGoogleResults(query) {
         .then(data => {
             document.getElementById("loading").style.display = "none"; // Hide loading indicator
             if (data.items && data.items.length > 0) {
+                let governmentLinks = [];
+                let privateLinks = [];
+
                 data.items.forEach(item => {
-                    const resultMessage = `${item.title}: <a href="${item.link}" target="_blank">${item.snippet}</a>`;
-                    addMessage(resultMessage, "bot");
+                    if (item.link.includes("gov")) {
+                        governmentLinks.push(item);
+                    } else {
+                        privateLinks.push(item);
+                    }
+                });
+
+                // Show Government Links first
+                governmentLinks.forEach(item => {
+                    addMessage(createSiteResult(item, true), "bot");
+                });
+
+                // Show Private Links next
+                privateLinks.forEach(item => {
+                    addMessage(createSiteResult(item), "bot");
                 });
             } else {
-                addMessage("Sorry, I couldn't find any relevant information on Google.", "bot");
+                addMessage("No results found. Please try again with a more specific query.", "bot");
             }
         })
         .catch(error => {
-            document.getElementById("loading").style.display = "none"; // Hide loading indicator
-            addMessage("Sorry, there was an error fetching Google results.", "bot");
-            console.error("Error fetching Google data:", error);
+            console.error("Error fetching search results:", error);
+            document.getElementById("loading").style.display = "none";
+            addMessage("Sorry, there was an error fetching the results. Please try again.", "bot");
         });
 }
 
+// Helper to create the site result HTML
+function createSiteResult(item, isGovernment = false) {
+    return `<div class="site-result">
+                ${isGovernment ? '<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/India_Government_Seal.svg/1200px-India_Government_Seal.svg.png" class="site-image" />' : ''}
+                <a href="${item.link}" target="_blank">${item.title}</a>
+                <p>${item.snippet}</p>
+            </div>`;
+}
+
 // Function to add messages to chat
-function addMessage(text, sender) {
-    const messageContainer = document.getElementById("messages");
-    const messageDiv = document.createElement("div");
-    messageDiv.classList.add("message", sender);
-    messageDiv.innerHTML = text; // Use innerHTML for handling links
-    messageContainer.appendChild(messageDiv);
-    messageContainer.scrollTop = messageContainer.scrollHeight; // Auto-scroll to the latest message
+function addMessage(message, type) {
+    const messageElement = document.createElement("div");
+    messageElement.classList.add("message", type);
+    messageElement.innerHTML = message;
+    document.getElementById("messages").appendChild(messageElement);
+    document.getElementById("messages").scrollTop = document.getElementById("messages").scrollHeight;
 }
 </script>
 
