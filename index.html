@@ -4,26 +4,56 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Login with Firebase</title>
-    
-    <!-- Firebase SDK -->
-    <script src="https://www.gstatic.com/firebasejs/9.8.4/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.8.4/firebase-auth.js"></script>
+    <!-- Firebase 9+ Modular SDK -->
+    <script type="module">
+        // Import Firebase SDK (version 9+)
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.8.4/firebase-app.js';
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from 'https://www.gstatic.com/firebasejs/9.8.4/firebase-auth.js';
 
-    <!-- Firebase Configuration -->
-    <script>
+        // Firebase configuration
         const firebaseConfig = {
-           apiKey: "AIzaSyCbNf4KoMpzfMxGpeX-UeKys1zqvvsvZSQ",
-  authDomain: "ai-chat-a04d2.firebaseapp.com",
-  projectId: "ai-chat-a04d2",
-  storageBucket: "ai-chat-a04d2.firebasestorage.app",
-  messagingSenderId: "977444551817",
-  appId: "1:977444551817:web:e50c9c4df105717ab71a58",
-  measurementId: "G-ZGB033CM3M"
+         apiKey: "AIzaSyCbNf4KoMpzfMxGpeX-UeKys1zqvvsvZSQ",
+         authDomain: "ai-chat-a04d2.firebaseapp.com",
+         projectId: "ai-chat-a04d2",
+         storageBucket: "ai-chat-a04d2.firebasestorage.app",
+         messagingSenderId: "977444551817",
+         appId: "1:977444551817:web:e50c9c4df105717ab71a58",
+         measurementId: "G-ZGB033CM3M"
         };
 
         // Initialize Firebase
-        const app = firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth(app);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const googleProvider = new GoogleAuthProvider();
+
+        document.getElementById("google-sign-in-btn").addEventListener("click", () => {
+            signInWithPopup(auth, googleProvider)
+                .then((result) => {
+                    const user = result.user;
+                    console.log("User info:", user);
+                    alert("Welcome, " + user.displayName);
+                    document.getElementById("google-sign-in-btn").style.display = "none";
+                    document.getElementById("user-info").style.display = "block";
+                    document.getElementById("user-name").textContent = user.displayName;
+                })
+                .catch((error) => {
+                    console.error("Error during login:", error.message);
+                    alert("Error during login: " + error.message);
+                });
+        });
+
+        document.getElementById("google-logout-btn").addEventListener("click", () => {
+            signOut(auth).then(() => {
+                console.log("User signed out.");
+                alert("You have logged out.");
+                document.getElementById("google-sign-in-btn").style.display = "block";
+                document.getElementById("user-info").style.display = "none";
+            }).catch((error) => {
+                console.error("Error during logout:", error);
+                alert("Error during logout.");
+            });
+        });
     </script>
 </head>
 <body>
@@ -37,50 +67,6 @@
         <h2>Welcome, <span id="user-name"></span></h2>
         <button id="google-logout-btn">Logout</button>
     </div>
-
-    <script>
-        // Google sign-in provider
-        const googleProvider = new firebase.auth.GoogleAuthProvider();
-
-        // Google Login Button Event
-        document.getElementById("google-sign-in-btn").addEventListener("click", function() {
-            firebase.auth().signInWithPopup(googleProvider)
-                .then((result) => {
-                    // Successfully signed in
-                    const user = result.user;
-                    console.log("User info:", user);
-                    alert("Welcome, " + user.displayName);
-
-                    // Display user info
-                    document.getElementById("google-sign-in-btn").style.display = "none";
-                    document.getElementById("user-info").style.display = "block";
-                    document.getElementById("user-name").textContent = user.displayName;
-                })
-                .catch((error) => {
-                    // Handle Errors
-                    const errorCode = error.code;
-                    const errorMessage = error.message;
-                    console.log("Error code:", errorCode);
-                    console.log("Error message:", errorMessage);
-                    alert("Error during login: " + errorMessage);
-                });
-        });
-
-        // Google Logout Button Event
-        document.getElementById("google-logout-btn").addEventListener("click", function() {
-            firebase.auth().signOut().then(() => {
-                console.log("User signed out.");
-                alert("You have logged out.");
-
-                // Hide user info and show login button again
-                document.getElementById("google-sign-in-btn").style.display = "block";
-                document.getElementById("user-info").style.display = "none";
-            }).catch((error) => {
-                console.log("Error during logout:", error);
-                alert("Error during logout.");
-            });
-        });
-    </script>
 
 </body>
 </html>
