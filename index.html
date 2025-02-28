@@ -5,28 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI Chat with RJ Services</title>
     <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
             background-color: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
         }
+
         .chat-container {
+            width: 100%;
             max-width: 600px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
             background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
         }
+
         h2 {
             text-align: center;
             color: #333;
+            margin-bottom: 20px;
         }
+
         .chat-box {
             margin-top: 20px;
             display: flex;
             flex-direction: column;
         }
+
         .chat-box input {
             padding: 10px;
             font-size: 14px;
@@ -35,6 +50,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
         }
+
         .chat-box button {
             padding: 10px;
             background-color: #007bff;
@@ -42,18 +58,23 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
+
         .chat-box button:hover {
             background-color: #0056b3;
         }
+
         .messages {
             max-height: 400px;
-            overflow-y: scroll;
+            overflow-y: auto;
             margin-bottom: 20px;
             padding: 10px;
             background-color: #f9f9f9;
             border-radius: 10px;
+            margin-top: 10px;
         }
+
         .message {
             padding: 10px;
             margin: 5px 0;
@@ -61,13 +82,26 @@
             border-radius: 5px;
             max-width: 80%;
         }
+
         .user {
             background: #e1f5fe;
             align-self: flex-start;
         }
+
         .bot {
             background: #fff3e0;
             align-self: flex-end;
+        }
+
+        /* Link Styling */
+        a {
+            color: #007bff;
+            text-decoration: none;
+            word-wrap: break-word;
+        }
+
+        a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
@@ -85,7 +119,6 @@
 <script>
 const apiKey = 'AIzaSyDqA356euefrQ1MwYape0W8CoDDb7Ihw9Q'; // Replace with your actual Google API key
 const cx = '221d48974cb96450a'; // Replace with your actual CSE ID
-
 
 // Function to handle user queries
 function sendQuery() {
@@ -107,7 +140,8 @@ function fetchGoogleResults(query) {
         .then(data => {
             if (data.items && data.items.length > 0) {
                 const firstResult = data.items[0];
-                addMessage(`Google result: ${firstResult.title} - ${firstResult.link}`, "bot");
+                const resultMessage = `Google result: <a href="${firstResult.link}" target="_blank">${firstResult.title}</a>`;
+                addMessage(resultMessage, "bot");
             } else {
                 addMessage("Sorry, I couldn't find any relevant information on Google.", "bot");
             }
@@ -123,7 +157,7 @@ function addMessage(text, sender) {
     const messageContainer = document.getElementById("messages");
     const messageDiv = document.createElement("div");
     messageDiv.classList.add("message", sender);
-    messageDiv.innerText = text;
+    messageDiv.innerHTML = text; // Use innerHTML for handling links
     messageContainer.appendChild(messageDiv);
     messageContainer.scrollTop = messageContainer.scrollHeight; // Auto-scroll to the latest message
 }
