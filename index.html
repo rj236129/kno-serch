@@ -4,13 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login with Firebase (Google & Email)</title>
+    
     <!-- Firebase 9+ Modular SDK -->
     <script type="module">
-        // Import Firebase SDK (version 9+)
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.8.4/firebase-app.js';
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.8.4/firebase-auth.js';
 
-        // Firebase configuration
         const firebaseConfig = {
          apiKey: "AIzaSyCbNf4KoMpzfMxGpeX-UeKys1zqvvsvZSQ",
          authDomain: "ai-chat-a04d2.firebaseapp.com",
@@ -21,7 +20,6 @@
          measurementId: "G-ZGB033CM3M"
         };
 
-        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const googleProvider = new GoogleAuthProvider();
@@ -31,9 +29,7 @@
             try {
                 const result = await signInWithPopup(auth, googleProvider);
                 const user = result.user;
-                console.log("User info:", user);
                 alert(`Welcome, ${user.displayName}`);
-
                 document.getElementById("google-sign-in-btn").style.display = "none";
                 document.getElementById("user-info").style.display = "block";
                 document.getElementById("user-name").textContent = user.displayName;
@@ -91,33 +87,111 @@
             }
         };
 
-        // Event listeners
         document.getElementById("google-sign-in-btn").addEventListener("click", handleGoogleSignIn);
         document.getElementById("google-logout-btn").addEventListener("click", handleLogout);
         document.getElementById("email-sign-up-btn").addEventListener("click", handleEmailSignUp);
         document.getElementById("email-sign-in-btn").addEventListener("click", handleEmailSignIn);
     </script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            width: 350px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #1877f2;
+        }
+        .logo {
+            display: flex;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: bold;
+            color: #1877f2;
+            margin-bottom: 20px;
+        }
+        .button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .google-btn {
+            background-color: #4285f4;
+            color: white;
+        }
+        .email-btn {
+            background-color: #34b7f1;
+            color: white;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .terms-section {
+            margin-top: 10px;
+        }
+        .terms-section input {
+            margin-right: 5px;
+        }
+        #user-info {
+            text-align: center;
+            display: none;
+        }
+        .user-info h2 {
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
 
-    <h1>Login with Firebase</h1>
+    <div class="container">
+        <div class="logo">RJ</div>
+        <h1>Login to RJ Services</h1>
+        
+        <!-- Google Login Button -->
+        <button id="google-sign-in-btn" class="button google-btn">Login with Google</button>
 
-    <!-- Google Login Button -->
-    <button id="google-sign-in-btn">Login with Google</button>
+        <!-- Email Login Section -->
+        <div id="email-login-section">
+            <input type="email" id="email" class="input-field" placeholder="Enter Email" required />
+            <input type="password" id="password" class="input-field" placeholder="Enter Password" required />
+            
+            <button id="email-sign-up-btn" class="button email-btn">Sign Up</button>
+            <button id="email-sign-in-btn" class="button email-btn">Sign In</button>
+        </div>
 
-    <!-- Email Login Section -->
-    <div id="email-login-section">
-        <h2>Email Sign Up / Sign In</h2>
-        <input type="email" id="email" placeholder="Enter Email" required />
-        <input type="password" id="password" placeholder="Enter Password" required />
-        <button id="email-sign-up-btn">Sign Up</button>
-        <button id="email-sign-in-btn">Sign In</button>
-    </div>
-
-    <!-- User Info Section -->
-    <div id="user-info" style="display:none;">
-        <h2>Welcome, <span id="user-name"></span></h2>
-        <button id="google-logout-btn">Logout</button>
+        <!-- Terms and Conditions Section -->
+        <div class="terms-section">
+            <input type="checkbox" id="terms-checkbox" />
+            <label for="terms-checkbox">I accept the <a href="#">Terms & Conditions</a></label>
+        </div>
+        
+        <!-- User Info Section -->
+        <div id="user-info">
+            <div class="user-info">
+                <h2>Welcome, <span id="user-name"></span></h2>
+                <button id="google-logout-btn" class="button google-btn">Logout</button>
+            </div>
+        </div>
     </div>
 
 </body>
