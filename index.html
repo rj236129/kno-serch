@@ -24,36 +24,43 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
-
         const googleProvider = new GoogleAuthProvider();
 
-        document.getElementById("google-sign-in-btn").addEventListener("click", () => {
-            signInWithPopup(auth, googleProvider)
-                .then((result) => {
-                    const user = result.user;
-                    console.log("User info:", user);
-                    alert("Welcome, " + user.displayName);
-                    document.getElementById("google-sign-in-btn").style.display = "none";
-                    document.getElementById("user-info").style.display = "block";
-                    document.getElementById("user-name").textContent = user.displayName;
-                })
-                .catch((error) => {
-                    console.error("Error during login:", error.message);
-                    alert("Error during login: " + error.message);
-                });
-        });
+        // Handle Google Sign-In
+        const handleSignIn = async () => {
+            try {
+                const result = await signInWithPopup(auth, googleProvider);
+                const user = result.user;
 
-        document.getElementById("google-logout-btn").addEventListener("click", () => {
-            signOut(auth).then(() => {
+                console.log("User info:", user);
+                alert(`Welcome, ${user.displayName}`);
+
+                document.getElementById("google-sign-in-btn").style.display = "none";
+                document.getElementById("user-info").style.display = "block";
+                document.getElementById("user-name").textContent = user.displayName;
+            } catch (error) {
+                console.error("Error during login:", error.message);
+                alert(`Error during login: ${error.message}`);
+            }
+        };
+
+        // Handle Google Logout
+        const handleLogout = async () => {
+            try {
+                await signOut(auth);
                 console.log("User signed out.");
                 alert("You have logged out.");
                 document.getElementById("google-sign-in-btn").style.display = "block";
                 document.getElementById("user-info").style.display = "none";
-            }).catch((error) => {
-                console.error("Error during logout:", error);
+            } catch (error) {
+                console.error("Error during logout:", error.message);
                 alert("Error during logout.");
-            });
-        });
+            }
+        };
+
+        // Event listeners
+        document.getElementById("google-sign-in-btn").addEventListener("click", handleSignIn);
+        document.getElementById("google-logout-btn").addEventListener("click", handleLogout);
     </script>
 </head>
 <body>
@@ -63,6 +70,7 @@
     <!-- Google Login Button -->
     <button id="google-sign-in-btn">Login with Google</button>
 
+    <!-- User Info Section -->
     <div id="user-info" style="display:none;">
         <h2>Welcome, <span id="user-name"></span></h2>
         <button id="google-logout-btn">Logout</button>
