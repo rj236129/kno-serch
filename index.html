@@ -3,54 +3,83 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Google Login Example</title>
+    <title>Google Login with Firebase</title>
     
-    <!-- Include the Google API script -->
-    <script src="https://apis.google.com/js/platform.js" async defer></script>
-    
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin-top: 50px;
-        }
-    </style>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.8.4/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.8.4/firebase-auth.js"></script>
+
+    <!-- Firebase Configuration -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID",
+            measurementId: "YOUR_MEASUREMENT_ID"
+        };
+
+        // Initialize Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth(app);
+    </script>
 </head>
 <body>
 
-    <!-- Google Sign-In Button -->
-    <h2>Login with Google</h2>
-    <div class="g-signin2" data-onsuccess="onSignIn" data-clientid="977444551817-rhsph4tejqldchn1rjcc5gmdbhe06m0k.apps.googleusercontent.com"></div>
+    <h1>Login with Google</h1>
 
-    <!-- Logout Button (Initially Hidden) -->
-    <button id="signout-button" style="display:none;" onclick="signOut()">Sign Out</button>
+    <!-- Google Login Button -->
+    <button id="google-sign-in-btn">Login with Google</button>
+
+    <div id="user-info" style="display:none;">
+        <h2>Welcome, <span id="user-name"></span></h2>
+        <button id="google-logout-btn">Logout</button>
+    </div>
 
     <script>
-        // Function to handle Google sign-in success
-        function onSignIn(googleUser) {
-            var profile = googleUser.getBasicProfile();
-            
-            // Display user info in the console (you can use it as per your need)
-            console.log("Full Name: " + profile.getName());
-            console.log("Email: " + profile.getEmail());
-            console.log("Profile Image: " + profile.getImageUrl());
-            
-            // Hide the sign-in button and show the sign-out button
-            document.querySelector('.g-signin2').style.display = 'none';
-            document.getElementById('signout-button').style.display = 'block';
-        }
+        // Google sign-in provider
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
 
-        // Function to handle user sign-out
-        function signOut() {
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function () {
+        // Google Login Button Event
+        document.getElementById("google-sign-in-btn").addEventListener("click", function() {
+            firebase.auth().signInWithPopup(googleProvider)
+                .then((result) => {
+                    // Successfully signed in
+                    const user = result.user;
+                    console.log("User info:", user);
+                    alert("Welcome, " + user.displayName);
+
+                    // Display user info
+                    document.getElementById("google-sign-in-btn").style.display = "none";
+                    document.getElementById("user-info").style.display = "block";
+                    document.getElementById("user-name").textContent = user.displayName;
+                })
+                .catch((error) => {
+                    // Handle Errors
+                    const errorCode = error.code;
+                    const errorMessage = error.message;
+                    console.log("Error code:", errorCode);
+                    console.log("Error message:", errorMessage);
+                    alert("Error during login: " + errorMessage);
+                });
+        });
+
+        // Google Logout Button Event
+        document.getElementById("google-logout-btn").addEventListener("click", function() {
+            firebase.auth().signOut().then(() => {
                 console.log("User signed out.");
-                
-                // Show the sign-in button and hide the sign-out button
-                document.querySelector('.g-signin2').style.display = 'block';
-                document.getElementById('signout-button').style.display = 'none';
+                alert("You have logged out.");
+
+                // Hide user info and show login button again
+                document.getElementById("google-sign-in-btn").style.display = "block";
+                document.getElementById("user-info").style.display = "none";
+            }).catch((error) => {
+                console.log("Error during logout:", error);
+                alert("Error during logout.");
             });
-        }
+        });
     </script>
 
 </body>
