@@ -3,109 +3,86 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Google Login Example</title>
-
-  <!-- Load Google API Script -->
-  <script src="https://apis.google.com/js/platform.js?onload=init" async defer></script>
-
+  <title>Google Login</title>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
   <style>
+    /* Basic Styling for login page */
     body {
       font-family: Arial, sans-serif;
-      text-align: center;
-      margin-top: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      background-color: #f0f0f0;
     }
-
+    .container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+    .g-signin2 {
+      margin-top: 20px;
+    }
     #user-info {
       margin-top: 20px;
       display: none;
-    }
-
-    #user-info p {
       font-size: 18px;
+      color: #333;
     }
-
-    #sign-out-button {
+    #user-name {
+      font-weight: bold;
+    }
+    #user-email {
+      color: gray;
+    }
+    #sign-out {
       margin-top: 20px;
-      display: none;
-      padding: 10px 20px;
-      background-color: #f44336;
+      padding: 10px 15px;
+      background-color: #db4437;
       color: white;
       border: none;
+      border-radius: 5px;
       cursor: pointer;
-    }
-
-    #sign-out-button:hover {
-      background-color: #d32f2f;
     }
   </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Login with Google</h2>
+    <div class="g-signin2" data-onsuccess="onSignIn" data-clientid="673877900657-cq90vf6i8mqo00afqtf2cc7jm0pmlq05.apps.googleusercontent.com"></div>
 
-  <h2>Login with Google</h2>
-
-  <!-- Google Sign-In Button -->
-  <div class="g-signin2" data-onsuccess="onSignIn" data-clientid="673877900657-cq90vf6i8mqo00afqtf2cc7jm0pmlq05.apps.googleusercontent.com"></div>
-
-  <!-- Display User Info After Login -->
-  <div id="user-info">
-    <h3>User Information:</h3>
-    <p id="user-name"></p>
-    <p id="user-email"></p>
+    <div id="user-info">
+      <p>Hello, <span id="user-name"></span>!</p>
+      <p>Email: <span id="user-email"></span></p>
+      <button id="sign-out" onclick="signOut()">Sign Out</button>
+    </div>
   </div>
 
-  <!-- Sign-Out Button -->
-  <button id="sign-out-button" onclick="signOut()">Sign Out</button>
-
   <script>
-    // Function to handle successful Google Sign-In
     function onSignIn(googleUser) {
+      // Get user information
       var profile = googleUser.getBasicProfile();
-      var id_token = googleUser.getAuthResponse().id_token;
-
-      // Displaying user info
-      document.getElementById("user-info").style.display = "block";
-      document.getElementById("user-name").textContent = "Full Name: " + profile.getName();
-      document.getElementById("user-email").textContent = "Email: " + profile.getEmail();
-
-      // Hide Sign-In button and show Sign-Out button
-      document.querySelector(".g-signin2").style.display = "none";
-      document.getElementById("sign-out-button").style.display = "inline-block";
-
-      // You can send this id_token to your server for verification or further processing.
-      // Example using fetch API:
-      // fetch('/your-server-endpoint', {
-      //   method: 'POST',
-      //   body: JSON.stringify({ id_token: id_token }),
-      //   headers: { 'Content-Type': 'application/json' }
-      // })
-      // .then(response => response.json())
-      // .then(data => {
-      //   console.log("Server response: ", data);
-      // });
+      var userName = profile.getName();
+      var userEmail = profile.getEmail();
+      
+      // Display user info
+      document.getElementById('user-name').textContent = userName;
+      document.getElementById('user-email').textContent = userEmail;
+      document.getElementById('user-info').style.display = 'block';
+      document.querySelector('.g-signin2').style.display = 'none';
     }
 
-    // Function to handle Sign-Out
     function signOut() {
       var auth2 = gapi.auth2.getAuthInstance();
-      auth2.signOut().then(function () {
-        console.log("User signed out.");
-
-        // Hide user info and show the Sign-In button again
-        document.getElementById("user-info").style.display = "none";
-        document.querySelector(".g-signin2").style.display = "inline-block";
-        document.getElementById("sign-out-button").style.display = "none";
-      });
-    }
-
-    // Initialize Google API with Client ID
-    function init() {
-      gapi.load('auth2', function() {
-        gapi.auth2.init({
-          client_id: '673877900657-cq90vf6i8mqo00afqtf2cc7jm0pmlq05.apps.googleusercontent.com' // Replace with your Google Client ID
-        });
+      auth2.signOut().then(function() {
+        console.log('User signed out.');
+        document.getElementById('user-info').style.display = 'none';
+        document.querySelector('.g-signin2').style.display = 'block';
       });
     }
   </script>
-
 </body>
 </html>
