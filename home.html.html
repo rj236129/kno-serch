@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Tools Hub</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+        }
+        nav {
+            background-color: #555;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+        }
+        .container {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .tool-card {
+            background-color: white;
+            padding: 20px;
+            margin: 10px;
+            width: 200px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .tool-card h3 {
+            text-align: center;
+        }
+        .tool-card button {
+            width: 100%;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        .tool-card button:hover {
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AI Tools Hub</h1>
+    </header>
+
+    <nav>
+        <a href="#" onclick="useTool('Content Creation')">Content Creation</a>
+        <a href="#" onclick="useTool('NLP Tools')">NLP Tools</a>
+        <a href="#" onclick="useTool('Image Processing')">Image Processing</a>
+        <a href="#" onclick="useTool('Personalization')">Personalization</a>
+        <a href="#" onclick="useTool('Voice Recognition')">Voice Recognition</a>
+        <a href="#" onclick="useTool('Data Analytics')">Data Analytics</a>
+        <a href="#" onclick="useTool('ML & DL')">ML & DL</a>
+        <a href="#" onclick="useTool('Biometrics')">Biometrics</a>
+        <a href="#" onclick="useTool('Customer Support')">Customer Support</a>
+        <a href="#" onclick="useTool('Cybersecurity')">Cybersecurity</a>
+        <a href="#" onclick="useTool('Healthcare')">Healthcare</a>
+        <a href="#" onclick="useTool('Travel AI')">Travel AI</a>
+    </nav>
+
+    <div class="container">
+        <div class="tool-card">
+            <h3>Content Creation</h3>
+            <button onclick="useTool('Content Creation')">Use Tool</button>
+        </div>
+        <div class="tool-card">
+            <h3>NLP Tools</h3>
+            <button onclick="useTool('NLP Tools')">Use Tool</button>
+        </div>
+        <div class="tool-card">
+            <h3>Image Processing</h3>
+            <button onclick="useTool('Image Processing')">Use Tool</button>
+        </div>
+        <!-- You can add more tools here -->
+    </div>
+
+    <script>
+        function useTool(tool) {
+            alert(tool + " Tool Activated!");
+
+            // Depending on the tool, you can add API calls here. For example:
+            if (tool === "Content Creation") {
+                alert("Content Creation Tool is using AI for text generation.");
+                // Example API call
+                // CallOpenAIContentCreationAPI();
+            } else if (tool === "NLP Tools") {
+                alert("NLP Tool is processing text.");
+                // Example NLP API call
+                // CallNLPAPI();
+            }
+            // Add similar functions for other tools as required.
+        }
+    </script>
+</body>
+</html>
