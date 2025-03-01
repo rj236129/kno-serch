@@ -10,6 +10,7 @@
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.8.4/firebase-app.js';
         import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.8.4/firebase-auth.js';
 
+        // Firebase configuration
         const firebaseConfig = {
          apiKey: "AIzaSyCbNf4KoMpzfMxGpeX-UeKys1zqvvsvZSQ",
          authDomain: "ai-chat-a04d2.firebaseapp.com",
@@ -20,6 +21,7 @@
          measurementId: "G-ZGB033CM3M"
         };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const googleProvider = new GoogleAuthProvider();
@@ -33,6 +35,9 @@
                 document.getElementById("google-sign-in-btn").style.display = "none";
                 document.getElementById("user-info").style.display = "block";
                 document.getElementById("user-name").textContent = user.displayName;
+
+                // Redirect to home.html after successful Google login
+                window.location.href = "home.html"; // Redirect to home.html
             } catch (error) {
                 console.error("Error during Google login:", error.message);
                 alert(`Error during Google login: ${error.message}`);
@@ -64,6 +69,9 @@
                 document.getElementById("email-login-section").style.display = "none";
                 document.getElementById("user-info").style.display = "block";
                 document.getElementById("user-name").textContent = user.email;
+
+                // Redirect to home.html after successful sign-up
+                window.location.href = "home.html"; // Redirect to home.html
             } catch (error) {
                 console.error("Error during sign-up:", error.message);
                 alert(`Error during sign-up: ${error.message}`);
@@ -81,6 +89,9 @@
                 document.getElementById("email-login-section").style.display = "none";
                 document.getElementById("user-info").style.display = "block";
                 document.getElementById("user-name").textContent = user.email;
+
+                // Redirect to home.html after successful sign-in
+                window.location.href = "home.html"; // Redirect to home.html
             } catch (error) {
                 console.error("Error during sign-in:", error.message);
                 alert(`Error during sign-in: ${error.message}`);
